@@ -30,12 +30,12 @@ import org.eclipse.swt.SWT;
  * <p>
  */
 
-public class SampleView extends ViewPart {
+public class NamingCountView extends ViewPart {
 
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "namingcounter.views.SampleView";
+	public static final String ID = "namingcounter.views.NamingCountView";
 
 	private TableViewer viewer;
 	private Action action1;
@@ -79,7 +79,7 @@ public class SampleView extends ViewPart {
 	/**
 	 * The constructor.
 	 */
-	public SampleView() {
+	public NamingCountView() {
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class SampleView extends ViewPart {
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
-				SampleView.this.fillContextMenu(manager);
+				NamingCountView.this.fillContextMenu(manager);
 			}
 		});
 		Menu menu = menuMgr.createContextMenu(viewer.getControl());
@@ -178,7 +178,7 @@ public class SampleView extends ViewPart {
 	private void showMessage(String message) {
 		MessageDialog.openInformation(
 			viewer.getControl().getShell(),
-			"Sample View",
+			"NamingCountView",
 			message);
 	}
 

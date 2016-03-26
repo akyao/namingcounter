@@ -2,37 +2,60 @@
 <?eclipse version="3.4"?>
 <plugin>
 
-   <extension
-         point="org.eclipse.ui.views">
+   <!-- view -->
+   <extension point="org.eclipse.ui.views">
       <category
-            name="Sample Category"
+            name="Naming Counter"
             id="namingcounter">
       </category>
       <view
-            name="Sample View"
-            icon="icons/sample.gif"
+            name="Count Result"
             category="namingcounter"
-            class="namingcounter.views.SampleView"
-            id="namingcounter.views.SampleView">
+            class="namingcounter.views.NamingCountView"
+            id="namingcounter.views.NamingCountView">
       </view>
    </extension>
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.eclipse.jdt.ui.JavaPerspective">
+   
+   <!-- what? -->
+   <extension point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension targetID="org.eclipse.jdt.ui.JavaPerspective">
          <view
                ratio="0.5"
                relative="org.eclipse.ui.views.ProblemView"
                relationship="right"
-               id="namingcounter.views.SampleView">
+               id="namingcounter.views.NamingCountView">
          </view>
       </perspectiveExtension>
    </extension>
-   <extension
-         point="org.eclipse.help.contexts">
+   
+   <!-- ファイル単位で選択させたい場合はobjectContribution２つ作って、objectClass org.eclipse.core.resources.IFileにするのかな -->
+   <!-- popup -->
+   <extension point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IContainer"
+            adaptable="true"
+            id="objectContribution1">
+         <menu
+               label="Naming Counter"
+               id="namingcounter.menu"
+               path="additions">
+            <separator name="count" />
+         </menu>
+         <action
+               label="Naming Counter"
+               class="namingcounter.CountAction"
+               id="NamingCountAction"
+               menubarPath="namingcounter.menu/count">
+         </action>
+      </objectContribution>
+   </extension>
+   
+   <!--
+   <extension point="org.eclipse.help.contexts">
       <contexts
             file="contexts.xml">
       </contexts>
    </extension>
-
+   -->
+   
 </plugin>
