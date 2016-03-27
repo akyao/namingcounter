@@ -33,12 +33,15 @@ public class CountAction implements IObjectActionDelegate {
 		System.out.println("koko");
 		try {
 			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-			window.getActivePage().showView("namingcounter.NamingCountView");
+			//window.getActivePage().showView("namingcounter.NamingCountView");
 			IViewReference[] views = window.getActivePage().getViewReferences();
+			
+			System.out.println("aaa" + views.length);
 			for(int i=0;i<views.length;i++){
 				IViewPart view = views[i].getView(false);
+				System.out.println(view);
 				if(view instanceof NamingCountView){
-					//((NamingCountView)view).count(selection);
+					((NamingCountView)view).count(selection);
 				}
 			}
 		} catch(Exception ex){

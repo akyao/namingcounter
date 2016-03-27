@@ -3,8 +3,26 @@ package namingcounter.views;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.*;
+
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.graphics.Image;
+
+import java.util.Iterator;
+
+import org.eclipse.core.internal.resources.File;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IField;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.internal.core.builder.SourceFile;
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.*;
@@ -42,6 +60,90 @@ public class NamingCountView extends ViewPart {
 	private Action action2;
 	private Action doubleClickAction;
 
+	public void count(ISelection selection) {
+
+		if (selection != null && selection instanceof IStructuredSelection) {
+			IStructuredSelection iSel = (IStructuredSelection)selection;
+
+			@SuppressWarnings("unchecked")
+			Iterator<Object> ite = iSel.iterator();
+			
+			System.out.println("hello");
+			while (ite.hasNext()) {
+				Object obj = ite.next();
+				System.out.println("in while");
+				if (obj instanceof ICompilationUnit) {
+					// Javaソースファイル（JDT）
+					ICompilationUnit file = (ICompilationUnit)obj;
+					fuck(file);
+				} else if (obj instanceof IPackageFragment) {
+					// Javaパッケージ（JDT）
+					try{
+						IPackageFragment pkg = (IPackageFragment)obj;	
+						for (ICompilationUnit file : pkg.getCompilationUnits()) {
+							fuck(file);
+						}
+					}catch(Exception e){
+						throw new RuntimeException(e);
+					}
+//				} else if (obj instanceof IFile) {
+//					// ファイル
+//					System.out.println(obj);
+				} else if (obj instanceof IContainer) {
+					try{
+						IContainer dir = (IContainer) obj;
+						fuckfuck(dir);
+					}catch(Exception e){
+						throw new RuntimeException(e);
+					}
+				}
+			}
+		}
+	}
+	
+	private void fuckfuck(IContainer container) {
+		try{
+			for (IResource res : container.members()) {
+				System.out.println("----");
+				if (res instanceof IContainer) {
+					fuckfuck((IContainer) res);
+				} else if (res instanceof ICompilationUnit){
+					fuck((ICompilationUnit) res);
+				} else if (res instanceof File) {
+					File javaFile = (File) res;
+					IJavaElement jEle = JavaCore.create(javaFile);
+					ICompilationUnit unit = (ICompilationUnit) jEle.getAncestor(IJavaElement.COMPILATION_UNIT);
+					if(unit != null) {
+						for (IType it : unit.getTypes()) {
+							
+							// TODO inner クラスがあるかぎり　it.getTypes();
+							for (IType it2 : it.getTypes()) {
+								System.out.println(it2.getElementName());
+							}
+							System.out.println(it.getElementName());
+							for (IMethod method : it.getMethods()) {
+								System.out.println(method.getElementName());
+							}
+							
+							for (IField field : it.getFields()) {
+								System.out.println(field.getElementName());
+							}
+						}
+					}
+				} else {
+					System.out.println(res.getClass());
+				}
+			}
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private void fuck(ICompilationUnit java) {
+		System.out.println("----");
+		System.out.println(java.getElementName());
+	}
+	
 	/*
 	 * The content provider class is responsible for
 	 * providing objects to the view. It can wrap
