@@ -18,20 +18,21 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
-import namingcounter.dto.NamingData;
+import namingcounter.dto.CountData;
 
 public class Counter {
 
-	private NamingData namingData = new NamingData();
+	private CountData countData = new CountData();
+	
 	private IStructuredSelection iSel;
 
-	public static NamingData count(ISelection iSel) {
+	public static CountData count(ISelection iSel) {
 		if (iSel != null && iSel instanceof IStructuredSelection) {
 			Counter c = new Counter((IStructuredSelection)iSel);
 			c.count();
-			return c.namingData;	
+			return c.countData;	
 		}
-		return new NamingData();
+		return new CountData();
 	}
 	
 	private Counter(IStructuredSelection iSel){
@@ -87,22 +88,22 @@ public class Counter {
 					if(unit != null) {
 						for (IType it : unit.getTypes()) {
 							// top level class
-							namingData.add(toSmallCaracters(splitToWord(it.getElementName())), it);
+							countData.add(toSmallCaracters(splitToWord(it.getElementName())), it);
 							
 							// inner class
 							for (IType it2 : it.getTypes()) {
 								// TODO 再帰
-								namingData.add(toSmallCaracters(splitToWord(it2.getElementName())), it2);
+								countData.add(toSmallCaracters(splitToWord(it2.getElementName())), it2);
 							}
 							
 							// methods
 							for (IMethod method : it.getMethods()) {
-								namingData.add(toSmallCaracters(splitToWord(method.getElementName())), method);
+								countData.add(toSmallCaracters(splitToWord(method.getElementName())), method);
 							}
 							
 							// fields
 							for (IField field : it.getFields()) {
-								namingData.add(toSmallCaracters(splitToWord(field.getElementName())), field);
+								countData.add(toSmallCaracters(splitToWord(field.getElementName())), field);
 							}
 						}
 					}

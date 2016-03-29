@@ -17,15 +17,15 @@ import org.eclipse.jdt.core.IType;
  * 
  * @author akyao
  */
-public class NamingData {
+public class CountData {
 
-	private Map<String, NamingDataItem> items = new HashMap<>();
+	private Map<String, CountDataItem> items = new HashMap<>();
 	
 	public void add(List<String> words, IJavaElement elementType) {
 		for (String word : words) {
-			NamingDataItem item = items.containsKey(word) 
+			CountDataItem item = items.containsKey(word) 
 					? items.get(word)
-					: new NamingDataItem(word);
+					: new CountDataItem(word);
 			if ( elementType instanceof IType) {
 				// TODO class, interface, enum?
 				item.countInClass += 1;
@@ -40,10 +40,10 @@ public class NamingData {
 		}
 	}
 	
-	public List<NamingDataItem> getItems() {
+	public List<CountDataItem> getItems() {
 		return items.entrySet().stream()
 				.map(x -> x.getValue())
-				.sorted(Comparator.comparing(NamingDataItem::total).reversed())
+				.sorted(Comparator.comparing(CountDataItem::total).reversed())
 				.collect(Collectors.toList());
 	}
 	
@@ -51,21 +51,21 @@ public class NamingData {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
-		for (Entry<String, NamingDataItem> entry : items.entrySet()) {
+		for (Entry<String, CountDataItem> entry : items.entrySet()) {
 			sb.append(String.format("%s:{%s}\n", entry.getKey(), entry.getValue()));
 		}
 		sb.append("}");
 		return sb.toString();
 	}
 	
-	public static class NamingDataItem {
+	public static class CountDataItem {
 		public String word;
 		public int countInClass;
 		public int countInMethod;
 		public int countInField;
 		public int countInSomething; // what?
 		
-		public NamingDataItem(String word) {
+		public CountDataItem(String word) {
 			this.word = word;
 		}
 		

@@ -9,7 +9,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-import namingcounter.dto.NamingData;
+import namingcounter.dto.CountData;
 import namingcounter.views.NamingCountView;
 
 /**
@@ -20,19 +20,20 @@ public class CountAction implements IObjectActionDelegate {
 //	private IWorkbenchPart targetPart;
 	private ISelection selection;
 
+	@Override
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		// TODO なにこれ？
 //		this.targetPart = targetPart;
 	}
 
+	@Override
 	public void run(IAction action) {
 		try {
-			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-
 			// 計算
-			NamingData ore = Counter.count(selection);
+			CountData ore = Counter.count(selection);
 
 			// 表示
+			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 			IViewPart viewPart = window.getActivePage().showView("namingcounter.views.NamingCountView", null, IWorkbenchPage.VIEW_VISIBLE);
 			if (viewPart instanceof NamingCountView) {
 				((NamingCountView) viewPart).render(ore);
@@ -43,6 +44,7 @@ public class CountAction implements IObjectActionDelegate {
 		}
 	}
 
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		this.selection = selection;
 	}

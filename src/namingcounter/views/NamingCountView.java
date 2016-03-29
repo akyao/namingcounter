@@ -3,8 +3,8 @@ package namingcounter.views;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.*;
 
-import namingcounter.dto.NamingData;
-import namingcounter.dto.NamingData.NamingDataItem;
+import namingcounter.dto.CountData;
+import namingcounter.dto.CountData.CountDataItem;
 
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.layout.FillLayout;
@@ -33,11 +33,11 @@ public class NamingCountView extends ViewPart {
 
 	/**
 	 * 
-	 * @param namingData
+	 * @param countData
 	 */
-	public void render(NamingData namingData) {
+	public void render(CountData countData) {
 		
-		for (NamingDataItem dataItem : namingData.getItems()) {
+		for (CountDataItem dataItem : countData.getItems()) {
 			TableItem tableItem = new TableItem(table, SWT.NULL);
 			String[] data ={
 					dataItem.word,
@@ -53,6 +53,7 @@ public class NamingCountView extends ViewPart {
 		}
 	}
 	
+	@Override
 	public void createPartControl(Composite parent) {
 		
 	    Composite container = new Composite(parent, SWT.NONE);
@@ -86,6 +87,7 @@ public class NamingCountView extends ViewPart {
         tc.setText(header);
 	}
 	
+	@Override
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
