@@ -18,27 +18,28 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
-import namingcounter.dto.Ore;
+import namingcounter.dto.NamingData;
 
 public class Counter {
 
-	private Ore ore = new Ore();
+	private NamingData namingData = new NamingData();
 	private IStructuredSelection iSel;
 
-	public static Ore count(ISelection iSel) {
+	public static NamingData count(ISelection iSel) {
 		if (iSel != null && iSel instanceof IStructuredSelection) {
 			Counter c = new Counter((IStructuredSelection)iSel);
-			c.doCount();
-			return c.ore;	
+			c.count();
+			return c.namingData;	
 		}
-		return new Ore();
+		return new NamingData();
 	}
 	
 	private Counter(IStructuredSelection iSel){
 		this.iSel = iSel;
 	}
 	
-	private void doCount() {
+	// TODO 何を選択すると、どのファイル、フォルダが、どうやって扱われているのかよくわかっていない
+	private void count() {
 		@SuppressWarnings("unchecked")
 		Iterator<Object> ite = iSel.iterator();
 		
@@ -64,7 +65,7 @@ public class Counter {
 			} else if (obj instanceof IContainer) {
 				try{
 					IContainer dir = (IContainer) obj;
-					fuckfuck(dir);
+					count(dir);
 				}catch(Exception e){
 					throw new RuntimeException(e);
 				}
@@ -72,11 +73,11 @@ public class Counter {
 		}
 	}
 	
-	private void fuckfuck(IContainer container) {
+	private void count(IContainer container) {
 		try{
 			for (IResource res : container.members()) {
 				if (res instanceof IContainer) {
-					fuckfuck((IContainer) res);
+					count((IContainer) res);
 				} else if (res instanceof ICompilationUnit){
 					fuck((ICompilationUnit) res);
 				} else if (res instanceof File) {
@@ -86,28 +87,25 @@ public class Counter {
 					if(unit != null) {
 						for (IType it : unit.getTypes()) {
 							// top level class
-							ore.add(toSmallCaracters(splitToWord(it.getElementName())), it);
+							namingData.add(toSmallCaracters(splitToWord(it.getElementName())), it);
 							
 							// inner class
 							for (IType it2 : it.getTypes()) {
 								// TODO 再帰
-								ore.add(toSmallCaracters(splitToWord(it2.getElementName())), it2);
+								namingData.add(toSmallCaracters(splitToWord(it2.getElementName())), it2);
 							}
 							
 							// methods
-							System.out.println(it.getElementName());
 							for (IMethod method : it.getMethods()) {
-								ore.add(toSmallCaracters(splitToWord(method.getElementName())), method);
+								namingData.add(toSmallCaracters(splitToWord(method.getElementName())), method);
 							}
 							
 							// fields
 							for (IField field : it.getFields()) {
-								ore.add(toSmallCaracters(splitToWord(field.getElementName())), field);
+								namingData.add(toSmallCaracters(splitToWord(field.getElementName())), field);
 							}
 						}
 					}
-				} else {
-					System.out.println(res.getClass());
 				}
 			}
 		}catch(Exception e){

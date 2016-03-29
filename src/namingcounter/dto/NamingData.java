@@ -12,35 +12,38 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 
-public class Ore {
+/**
+ * データ入れ物
+ * 
+ * @author akyao
+ */
+public class NamingData {
 
-	private Map<String, OreOre> oreDayo = new HashMap<>();
+	private Map<String, NamingDataItem> items = new HashMap<>();
 	
 	public void add(List<String> words, IJavaElement elementType) {
 		for (String word : words) {
-			OreOre oreore = oreDayo.containsKey(word) 
-					? oreDayo.get(word)
-					: new OreOre(word);
+			NamingDataItem item = items.containsKey(word) 
+					? items.get(word)
+					: new NamingDataItem(word);
 			if ( elementType instanceof IType) {
 				// TODO class, interface, enum?
-				oreore.countInClass += 1;
+				item.countInClass += 1;
 			} else if ( elementType instanceof IMethod){
-				oreore.countInMethod += 1;
+				item.countInMethod += 1;
 			} else if (elementType instanceof IField) {
-				oreore.countInField += 1;
+				item.countInField += 1;
 			} else {
-				oreore.countInSomething += 1;
+				item.countInSomething += 1;
 			}
-			oreDayo.put(word, oreore);
+			items.put(word, item);
 		}
 	}
 	
-	public List<OreOre> getOreList() {
-		
-		return oreDayo.entrySet().stream()
+	public List<NamingDataItem> getItems() {
+		return items.entrySet().stream()
 				.map(x -> x.getValue())
-//				.sorted(Comparator.reverseOrder())
-				.sorted(Comparator.comparing(OreOre::total).reversed())
+				.sorted(Comparator.comparing(NamingDataItem::total).reversed())
 				.collect(Collectors.toList());
 	}
 	
@@ -48,21 +51,21 @@ public class Ore {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
-		for (Entry<String, OreOre> entry : oreDayo.entrySet()) {
+		for (Entry<String, NamingDataItem> entry : items.entrySet()) {
 			sb.append(String.format("%s:{%s}\n", entry.getKey(), entry.getValue()));
 		}
 		sb.append("}");
 		return sb.toString();
 	}
 	
-	public static class OreOre {
+	public static class NamingDataItem {
 		public String word;
 		public int countInClass;
 		public int countInMethod;
 		public int countInField;
 		public int countInSomething; // what?
 		
-		public OreOre(String word) {
+		public NamingDataItem(String word) {
 			this.word = word;
 		}
 		

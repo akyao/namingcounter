@@ -3,11 +3,8 @@ package namingcounter.views;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.*;
 
-import namingcounter.dto.Ore;
-import namingcounter.dto.Ore.OreOre;
-
-import java.util.Map.Entry;
-import java.util.function.IntFunction;
+import namingcounter.dto.NamingData;
+import namingcounter.dto.NamingData.NamingDataItem;
 
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.layout.FillLayout;
@@ -34,20 +31,24 @@ public class NamingCountView extends ViewPart {
 	public NamingCountView() {
 	}
 
-	public void yesTakasu(Ore ore) {
+	/**
+	 * 
+	 * @param namingData
+	 */
+	public void render(NamingData namingData) {
 		
-		for (OreOre oreore : ore.getOreList()) {
-			TableItem item = new TableItem(table, SWT.NULL);
+		for (NamingDataItem dataItem : namingData.getItems()) {
+			TableItem tableItem = new TableItem(table, SWT.NULL);
 			String[] data ={
-					oreore.word,
-					Integer.toString(oreore.countInClass),
-					Integer.toString(oreore.countInMethod),
-					Integer.toString(oreore.countInField),
-					Integer.toString(oreore.total())
+					dataItem.word,
+					Integer.toString(dataItem.countInClass),
+					Integer.toString(dataItem.countInMethod),
+					Integer.toString(dataItem.countInField),
+					Integer.toString(dataItem.total())
 			};
-			item.setText(data);	
-			if ("fuck".equals(oreore.word)) {
-				item.setBackground(new Color(table.getDisplay(), new RGB(255,0,0)));	
+			tableItem.setText(data);	
+			if ("fuck".equals(dataItem.word)) {
+				tableItem.setBackground(new Color(table.getDisplay(), new RGB(255,0,0)));	
 			}
 		}
 	}
@@ -85,9 +86,6 @@ public class NamingCountView extends ViewPart {
         tc.setText(header);
 	}
 	
-	/**
-	 * Passing the focus request to the viewer's control.
-	 */
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
