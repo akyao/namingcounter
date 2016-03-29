@@ -40,10 +40,15 @@ public class CountData {
 		}
 	}
 	
-	public List<CountDataItem> getItems() {
+	public List<CountDataItem> getItems(SortBy sortBy, boolean isDesc) {
+		Comparator<CountDataItem> sort = sortBy.comparator;
+		if (isDesc) {
+			sort = sort.reversed();
+		}
+		
 		return items.entrySet().stream()
 				.map(x -> x.getValue())
-				.sorted(Comparator.comparing(CountDataItem::total).reversed())
+				.sorted(sort)
 				.collect(Collectors.toList());
 	}
 	
@@ -56,6 +61,21 @@ public class CountData {
 		}
 		sb.append("}");
 		return sb.toString();
+	}
+	
+	public enum SortBy{
+		WORD(Comparator.comparing((CountDataItem x) -> x.word)),
+		CLASS(Comparator.comparing((CountDataItem x) -> x.countInClass)),
+		METHOD(Comparator.comparing((CountDataItem x) -> x.countInMethod)),
+		FIELD(Comparator.comparing((CountDataItem x) -> x.countInField)),
+		TOTAL(Comparator.comparing((CountDataItem x) -> x.total())),
+		;
+		
+		private Comparator<CountDataItem> comparator;
+		
+		private SortBy(Comparator<CountDataItem> comparator) {
+			this.comparator = comparator;
+		}
 	}
 	
 	public static class CountDataItem {
