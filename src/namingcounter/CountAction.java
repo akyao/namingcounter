@@ -17,14 +17,7 @@ import namingcounter.views.NamingCountView;
  */
 public class CountAction implements IObjectActionDelegate {
 
-//	private IWorkbenchPart targetPart;
 	private ISelection selection;
-
-	@Override
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		// TODO なにこれ？
-//		this.targetPart = targetPart;
-	}
 
 	@Override
 	public void run(IAction action) {
@@ -44,6 +37,11 @@ public class CountAction implements IObjectActionDelegate {
 		}
 	}
 
+	@Override
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		// TODO なにこれ？
+	}
+	
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		this.selection = selection;
