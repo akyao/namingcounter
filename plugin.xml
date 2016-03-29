@@ -32,17 +32,15 @@
    <!-- popup -->
    <extension point="org.eclipse.ui.popupMenus">
       <objectContribution
-            objectClass="org.eclipse.core.resources.IContainer"
+            objectClass="org.eclipse.core.resources.IResource"
             adaptable="true"
             id="objectContribution1">
-         <menu
-               label="Naming Counter"
+         <menu label="Naming Counter"
                id="namingcounter.menu"
                path="additions">
             <separator name="count" />
          </menu>
-         <action
-               label="Naming Counter"
+         <action label="count"
                class="namingcounter.CountAction"
                id="NamingCountAction"
                menubarPath="namingcounter.menu/count">

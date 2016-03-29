@@ -67,6 +67,10 @@ public class NamingCountView extends ViewPart {
 	}
 	
 	private void render(List<CountDataItem> dataItems) {
+		
+		// 表示を初期化
+		table.removeAll();
+		
 		for (CountDataItem dataItem : dataItems) {
 			// 行分のデータ
 			String[] data ={
@@ -143,9 +147,6 @@ public class NamingCountView extends ViewPart {
 
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-			
-			// データを初期化
-			table.removeAll();
 			
 			// ソート方法を取得する
 			TableColumn column = (TableColumn) e.getSource();

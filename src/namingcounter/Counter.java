@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IField;
@@ -28,7 +29,7 @@ public class Counter {
 
 	public static CountData count(ISelection iSel) {
 		if (iSel != null && iSel instanceof IStructuredSelection) {
-			Counter c = new Counter((IStructuredSelection)iSel);
+			Counter c = new Counter((IStructuredSelection) iSel);
 			c.count();
 			return c.countData;	
 		}
@@ -47,65 +48,70 @@ public class Counter {
 		while (ite.hasNext()) {
 			Object obj = ite.next();
 			if (obj instanceof ICompilationUnit) {
-				// Javaソースファイル（JDT）
-				ICompilationUnit file = (ICompilationUnit)obj;
-				fuck(file);
+				// Javaソース
+				count((ICompilationUnit) obj);
 			} else if (obj instanceof IPackageFragment) {
 				// Javaパッケージ（JDT）
 				try{
 					IPackageFragment pkg = (IPackageFragment)obj;	
 					for (ICompilationUnit file : pkg.getCompilationUnits()) {
-						fuck(file);
+						count(file);
 					}
 				}catch(Exception e){
 					throw new RuntimeException(e);
 				}
-//			} else if (obj instanceof IFile) {
-//				// ファイル
-//				System.out.println(obj);
+			} else if (obj instanceof IFile) {
+				// ファイル
+				count((IFile) obj);
 			} else if (obj instanceof IContainer) {
-				try{
-					IContainer dir = (IContainer) obj;
-					count(dir);
-				}catch(Exception e){
-					throw new RuntimeException(e);
-				}
+				// ディレクトリ
+				count((IContainer) obj);
 			}
 		}
 	}
 	
 	private void count(IContainer container) {
+		try {
+			for (IResource resource : container.members()) {
+				if (resource instanceof IContainer) {
+					count((IContainer) resource);
+				} else if (resource instanceof ICompilationUnit){
+					count((ICompilationUnit) resource);
+				} else if (resource instanceof IFile) {
+					count((IFile) resource);
+				}
+			}
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private void count(IFile file) {
+		IJavaElement jEle = JavaCore.create(file);
+		if (jEle != null) {
+			ICompilationUnit unit = (ICompilationUnit) jEle.getAncestor(IJavaElement.COMPILATION_UNIT);
+			count(unit);			
+		}
+	}
+	
+	private void count(ICompilationUnit unit) {
 		try{
-			for (IResource res : container.members()) {
-				if (res instanceof IContainer) {
-					count((IContainer) res);
-				} else if (res instanceof ICompilationUnit){
-					fuck((ICompilationUnit) res);
-				} else if (res instanceof File) {
-					File javaFile = (File) res;
-					IJavaElement jEle = JavaCore.create(javaFile);
-					ICompilationUnit unit = (ICompilationUnit) jEle.getAncestor(IJavaElement.COMPILATION_UNIT);
-					if(unit != null) {
-						for (IType it : unit.getTypes()) {
-							// top level class
-							countData.add(toSmallCaracters(splitToWord(it.getElementName())), it);
-							
-							// inner class
-							for (IType it2 : it.getTypes()) {
-								// TODO 再帰
-								countData.add(toSmallCaracters(splitToWord(it2.getElementName())), it2);
-							}
-							
-							// methods
-							for (IMethod method : it.getMethods()) {
-								countData.add(toSmallCaracters(splitToWord(method.getElementName())), method);
-							}
-							
-							// fields
-							for (IField field : it.getFields()) {
-								countData.add(toSmallCaracters(splitToWord(field.getElementName())), field);
-							}
-						}
+			if(unit != null) {
+				for (IType it : unit.getTypes()) {
+					// top level class
+					countData.add(toSmallCaracters(splitToWord(it.getElementName())), it);
+					// inner class
+					for (IType it2 : it.getTypes()) {
+						// TODO 再帰
+						countData.add(toSmallCaracters(splitToWord(it2.getElementName())), it2);
+					}
+					// methods
+					for (IMethod method : it.getMethods()) {
+						countData.add(toSmallCaracters(splitToWord(method.getElementName())), method);
+					}
+					// fields
+					for (IField field : it.getFields()) {
+						countData.add(toSmallCaracters(splitToWord(field.getElementName())), field);
 					}
 				}
 			}
