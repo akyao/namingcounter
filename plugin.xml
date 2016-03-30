@@ -4,12 +4,10 @@
 
    <!-- view -->
    <extension point="org.eclipse.ui.views">
-      <category
-            name="Naming Counter"
+      <category name="Naming Counter"
             id="namingcounter">
       </category>
-      <view
-            name="Count Result"
+      <view name="Count Result"
             category="namingcounter"
             class="namingcounter.views.NamingCountView"
             id="namingcounter.views.NamingCountView">
@@ -46,13 +44,4 @@
          </action>
       </objectContribution>
    </extension>
-   
-   <!--
-   <extension point="org.eclipse.help.contexts">
-      <contexts
-            file="contexts.xml">
-      </contexts>
-   </extension>
-   -->
-   
 </plugin>
