@@ -4,10 +4,11 @@
 + Javaファイルを解析して、クラス名、メソッド名、フィールド名で使われている単語の数をカウントします。
 + こんな感じです。
 
+![image sample](https://github.com/akyao/namingcounter/raw/master/sample.png "image sample")
 
 # インストール方法
 
-+ こちらからjarファイルをダウンロードしてください。
++ [こちら](https://github.com/akyao/namingcounter/releases) からjarファイルをダウンロードしてください。
 + ダウンロードしたjarファイルをeclipse/plugins下に置いてください
 
 # 使い方
