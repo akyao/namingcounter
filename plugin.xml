@@ -28,7 +28,6 @@
       </perspectiveExtension>
    </extension>
    
-   <!-- ファイル単位で選択させたい場合はobjectContribution２つ作って、objectClass org.eclipse.core.resources.IFileにするのかな -->
    <!-- popup -->
    <extension point="org.eclipse.ui.popupMenus">
       <objectContribution
